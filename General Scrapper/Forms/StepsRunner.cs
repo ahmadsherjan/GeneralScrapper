@@ -36,62 +36,69 @@ namespace General_Scrapper.Forms
         private void btnStart_Click(object sender, EventArgs e)
         {
             var json = "";
-            if(openFileDialog1.ShowDialog()!=DialogResult.OK)
-            {
-                MessageBox.Show("Please a step file");
-            }
-            json = File.ReadAllText(openFileDialog1.FileName);
+            //if(openFileDialog1.ShowDialog()!=DialogResult.OK)
+            //{
+            //    MessageBox.Show("Please a step file");
+            //}
+            //json = File.ReadAllText(openFileDialog1.FileName);
             lines = new List<string>();
 
-            Queue<BaseOperation> operations = new Queue<BaseOperation>();
-            var temp =JsonConvert.DeserializeObject<Queue<AllOperation>>(json);
-            //operations.Enqueue(new UrlOperation
-            //{
-            //    Value = "https://www.google.com/",
-            //    ValueType = ValueType.Url,
-            //    UrlOperationType = UrlOperationType.Redirect
-            //});
+            Queue<AllOperation> operations = new Queue<AllOperation>();
+            //operations = JsonConvert.DeserializeObject<Queue<AllOperation>>(json);
+            operations.Enqueue(new AllOperation
+            {
+                Value = "https://www.google.com/",
+                ValueType = ValueType.Url,
+                UrlOperationType = UrlOperationType.Redirect
+            });
 
-            //operations.Enqueue(new SeleniumOperation
-            //{
-            //    Value = "input[title=Search]",
-            //    Text = "C#",
-            //    ValueType = ValueType.Selenium,
-            //    SeleniumSelector = SeleniumSelector.JSSelector,
-            //    SeleniumOperationType = SeleniumOperationType.SetText
-            //});
-            //operations.Enqueue(new SeleniumOperation
-            //{
-            //    Value = "input[type=submit]",
-            //    Text = "C#",
-            //    ValueType = ValueType.Selenium,
-            //    SeleniumSelector = SeleniumSelector.JSSelector,
-            //    SeleniumOperationType = SeleniumOperationType.Click
-            //});
-            //operations.Enqueue(new RegexOperation
-            //{
-            //    Value = "<a href=\"(?<url>.*?)\" ping=",
-            //    Text = "url",
-            //    ValueType = ValueType.Regex,
-            //    RegexOperationType = RegexOperationType.Extract,
-            //    DependsOnChild=true,
-            //    Nested = new CompareOperation()
-            //    {
-            //        ValueType=ValueType.Compare,
-            //        RegexOperationType=RegexOperationType.NotNull,
-            //        Value= "<a[^>]*id=\"pnnext\"[^>]*>(?<data>.*?)</a>",
-            //        Text= "data",
-            //        Nested= new SeleniumOperation
-            //        {
-            //            Value = "a[id=pnnext]",
-            //            Text = "C#",
-            //            ValueType = ValueType.Selenium,
-            //            SeleniumSelector = SeleniumSelector.JSSelector,
-            //            SeleniumOperationType = SeleniumOperationType.Click
-            //        }
+            operations.Enqueue(new AllOperation
+            {
+                Value = "input[title=Search]",
+                Text = "C#",
+                ValueType = ValueType.Selenium,
+                SeleniumSelector = SeleniumSelector.JSSelector,
+                SeleniumOperationType = SeleniumOperationType.SetText
+            });
+            operations.Enqueue(new AllOperation
+            {
+                Value = "input[type=submit]",
+                Text = "C#",
+                ValueType = ValueType.Selenium,
+                SeleniumSelector = SeleniumSelector.JSSelector,
+                SeleniumOperationType = SeleniumOperationType.Click
+            });
+            operations.Enqueue(new AllOperation
+            {
+                Value = "<a href=\"(?<url>.*?)\" ping=",
+                Text = "url",
+                Expressions = new Dictionary<string, string>() { 
+                    {"url", "<a href=\"(?<url>.*?)\" ping=" }, 
+                    {"url1", "<a href=\"(?<url1>.*?)\" ping="},
+                    {"url2", "<a href=\"(?<url2>.*?)\" ping=" }
+                },
+                ValueType = ValueType.Regex,
+                RegexOperationType = RegexOperationType.Extract,
+                DependsOnChild = true,
+                Nested = new AllOperation()
+                {
+                    ValueType = ValueType.Compare,
+                    RegexOperationType = RegexOperationType.NotNull,
+                    Value = "<a[^>]*id=\"pnnext\"[^>]*>(?<data>.*?)</a>",
+                    Text = "data",
+                    Nested = new AllOperation
+                    {
+                        Value = "a[id=pnnext]",
+                        Text = "C#",
+                        ValueType = ValueType.Selenium,
+                        SeleniumSelector = SeleniumSelector.JSSelector,
+                        SeleniumOperationType = SeleniumOperationType.Click
+                    }
 
-            //    }
-            //});
+                }
+            }) ;
+            json = JsonConvert.SerializeObject(operations);
+
             while (operations.Count > 0)
             {
                 var op = operations.Dequeue();
@@ -101,6 +108,7 @@ namespace General_Scrapper.Forms
         }
         private bool PerformOperation(BaseOperation operation)
         {
+            Thread.Sleep(operation.WaitInSeconds * 1000);
             switch (operation.ValueType)
             {
                 case ValueType.Url:
@@ -117,8 +125,27 @@ namespace General_Scrapper.Forms
                     switch (rop.RegexOperationType)
                     {
                         case RegexOperationType.Extract:
-                            var data = MyUtilityMethods.getListFromPage(_driver.PageSource, rop.Value, rop.Text);
-                            lines.AddRange(data);
+                            var tempList = new Dictionary<string, string[]>();
+
+                            foreach (var key in rop.Expressions.Keys)
+                            {
+                                try
+                                {
+                                    var data = MyUtilityMethods.getListFromPage(_driver.PageSource, rop.Expressions[key], key);
+                                    tempList.Add(key, data);
+                                }catch(Exception exp) { }
+                            }
+                            var longest = tempList.Max(x => x.Value == null ? 0 : x.Value.Length);
+                            var format = string.Join(",", Enumerable.Range(0, rop.Expressions.Keys.Count).Select(x => "{" + x + "}").ToArray());
+                            for (int i = 0; i < longest; i++)
+                            {
+                                try
+                                {
+                                    var temp = tempList.Keys.Select(x => tempList[x].Length > i ? tempList[x][i] : "").ToArray();
+                                    var line = string.Format(format, temp);
+                                    lines.Add(line);
+                                }catch(Exception exp) { }
+                            }
                             break;
                     }
                     break;
@@ -175,10 +202,12 @@ namespace General_Scrapper.Forms
     {
         public string Value { get; set; }
         public string Text { get; set; }
+        public Dictionary<string, string> Expressions { get; set; }
         public ValueType ValueType { get; set; }
         public BaseOperation Nested { get; set; }
         public bool DependsOnChild { get; set; }
         public bool ChildDependsOnParent { get; set; }
+        public int WaitInSeconds { get; set; }
     }
     public enum ValueType
     {
@@ -234,7 +263,7 @@ namespace General_Scrapper.Forms
     {
 
     }
-    public class AllOperation:BaseOperation
+    public class AllOperation : BaseOperation
     {
         public UrlOperationType UrlOperationType { get; set; }
         public RegexOperationType RegexOperationType { get; set; }
