@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using Scrappers.Base.Classes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Utility;
+using ValueType = Scrappers.Base.Classes.ValueType;
 
 namespace General_Scrapper.Forms
 {
@@ -36,11 +38,11 @@ namespace General_Scrapper.Forms
         private void btnStart_Click(object sender, EventArgs e)
         {
             var json = "";
-            //if(openFileDialog1.ShowDialog()!=DialogResult.OK)
-            //{
-            //    MessageBox.Show("Please a step file");
-            //}
-            //json = File.ReadAllText(openFileDialog1.FileName);
+            if (openFileDialog1.ShowDialog() != DialogResult.OK)
+            {
+                MessageBox.Show("Please a step file");
+            }
+            json = File.ReadAllText(openFileDialog1.FileName);
             lines = new List<string>();
 
             Queue<AllOperation> operations = new Queue<AllOperation>();
@@ -97,8 +99,8 @@ namespace General_Scrapper.Forms
 
                 }
             }) ;
-            json = JsonConvert.SerializeObject(operations);
-
+            //json = JsonConvert.SerializeObject(operations);
+            operations = JsonConvert.DeserializeObject<Queue<AllOperation>>(json);
             while (operations.Count > 0)
             {
                 var op = operations.Dequeue();
@@ -198,76 +200,5 @@ namespace General_Scrapper.Forms
             return false;
         }
     }
-    public class BaseOperation
-    {
-        public string Value { get; set; }
-        public string Text { get; set; }
-        public Dictionary<string, string> Expressions { get; set; }
-        public ValueType ValueType { get; set; }
-        public BaseOperation Nested { get; set; }
-        public bool DependsOnChild { get; set; }
-        public bool ChildDependsOnParent { get; set; }
-        public int WaitInSeconds { get; set; }
-    }
-    public enum ValueType
-    {
-        Url,
-        Regex,
-        Selenium,
-        Compare
-    }
-    public class UrlOperation : BaseOperation
-    {
-        public UrlOperationType UrlOperationType { get; set; }
-    }
-    public enum UrlOperationType
-    {
-        Redirect
-    }
-    public class SeleniumOperation : BaseOperation
-    {
-        public SeleniumSelector SeleniumSelector { get; set; }
-        public SeleniumOperationType SeleniumOperationType { get; set; }
-    }
-    public enum SeleniumSelector
-    {
-        Id,
-        Tag,
-        Name,
-        Class,
-        CssSelector,
-        LinkText,
-        PartialLinkText,
-        XPath,
-        JSSelector,
-    }
-    public enum SeleniumOperationType
-    {
-        Click,
-        SetText,
-        Blur,
 
-    }
-    public class RegexOperation : BaseOperation
-    {
-        public RegexOperationType RegexOperationType { get; set; }
-
-    }
-    public enum RegexOperationType
-    {
-        Extract,
-        IsNull,
-        NotNull
-    }
-    public class CompareOperation : RegexOperation
-    {
-
-    }
-    public class AllOperation : BaseOperation
-    {
-        public UrlOperationType UrlOperationType { get; set; }
-        public RegexOperationType RegexOperationType { get; set; }
-        public SeleniumSelector SeleniumSelector { get; set; }
-        public SeleniumOperationType SeleniumOperationType { get; set; }
-    }
 }

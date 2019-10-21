@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "General Scrapper", "General
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scrappers.Common", "Scrappers.Common\Scrappers.Common.csproj", "{FC7240A8-068A-4C43-AE19-89D2CB5AB49E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scrappers.Base", "Scrapprs.Base\Scrappers.Base.csproj", "{22750393-EEF1-42C9-8E1B-6FE62B8479B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{FC7240A8-068A-4C43-AE19-89D2CB5AB49E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC7240A8-068A-4C43-AE19-89D2CB5AB49E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC7240A8-068A-4C43-AE19-89D2CB5AB49E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22750393-EEF1-42C9-8E1B-6FE62B8479B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22750393-EEF1-42C9-8E1B-6FE62B8479B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22750393-EEF1-42C9-8E1B-6FE62B8479B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22750393-EEF1-42C9-8E1B-6FE62B8479B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

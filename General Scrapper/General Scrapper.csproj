@@ -114,6 +114,10 @@
       <Project>{fc7240a8-068a-4c43-ae19-89d2cb5ab49e}</Project>
       <Name>Scrappers.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Scrapprs.Base\Scrappers.Base.csproj">
+      <Project>{22750393-EEF1-42C9-8E1B-6FE62B8479B0}</Project>
+      <Name>Scrappers.Base</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Selenium.Chrome.WebDriver.76.0.0\build\Selenium.Chrome.WebDriver.targets" Condition="Exists('..\packages\Selenium.Chrome.WebDriver.76.0.0\build\Selenium.Chrome.WebDriver.targets')" />
