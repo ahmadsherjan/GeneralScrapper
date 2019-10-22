@@ -13,7 +13,6 @@ namespace Scrappers.Base.Classes
         public string Text { get; set; }
         public Dictionary<string, string> Expressions { get; set; }
         public ValueType ValueType { get; set; }
-        public BaseOperation Nested { get; set; }
         public bool DependsOnChild { get; set; }
         public bool ChildDependsOnParent { get; set; }
         public int WaitInSeconds { get; set; }
@@ -77,5 +76,6 @@ namespace Scrappers.Base.Classes
         public RegexOperationType RegexOperationType { get; set; }
         public SeleniumSelector SeleniumSelector { get; set; }
         public SeleniumOperationType SeleniumOperationType { get; set; }
+        public AllOperation Nested { get; set; }
     }
 }

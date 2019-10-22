@@ -106,9 +106,10 @@ namespace General_Scrapper.Forms
                 var op = operations.Dequeue();
                 PerformOperation(op);
             }
+            File.WriteAllLines(DateTime.Now.ToString("hhmmMMddyyyy")+".csv", lines);
             MessageBox.Show("Completed " + lines.Count);
         }
-        private bool PerformOperation(BaseOperation operation)
+        private bool PerformOperation(AllOperation operation)
         {
             Thread.Sleep(operation.WaitInSeconds * 1000);
             switch (operation.ValueType)

@@ -42,6 +42,11 @@
             this.btnAdd = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.comboSelectorType = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.comboParent = new System.Windows.Forms.ComboBox();
+            this.checkDependsOnChild = new System.Windows.Forms.CheckBox();
+            this.checkChildDependOnParent = new System.Windows.Forms.CheckBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // btnSubmit
@@ -169,11 +174,63 @@
             this.comboSelectorType.TabIndex = 13;
             this.comboSelectorType.SelectedIndexChanged += new System.EventHandler(this.comboSelectorType_SelectedIndexChanged);
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(13, 29);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(63, 13);
+            this.label6.TabIndex = 16;
+            this.label6.Text = "Parent Step";
+            // 
+            // comboParent
+            // 
+            this.comboParent.FormattingEnabled = true;
+            this.comboParent.Location = new System.Drawing.Point(126, 26);
+            this.comboParent.Name = "comboParent";
+            this.comboParent.Size = new System.Drawing.Size(284, 21);
+            this.comboParent.TabIndex = 15;
+            // 
+            // checkDependsOnChild
+            // 
+            this.checkDependsOnChild.AutoSize = true;
+            this.checkDependsOnChild.Location = new System.Drawing.Point(125, 207);
+            this.checkDependsOnChild.Name = "checkDependsOnChild";
+            this.checkDependsOnChild.Size = new System.Drawing.Size(114, 17);
+            this.checkDependsOnChild.TabIndex = 17;
+            this.checkDependsOnChild.Text = "Depends on childs";
+            this.checkDependsOnChild.UseVisualStyleBackColor = true;
+            // 
+            // checkChildDependOnParent
+            // 
+            this.checkChildDependOnParent.AutoSize = true;
+            this.checkChildDependOnParent.Location = new System.Drawing.Point(269, 207);
+            this.checkChildDependOnParent.Name = "checkChildDependOnParent";
+            this.checkChildDependOnParent.Size = new System.Drawing.Size(146, 17);
+            this.checkChildDependOnParent.TabIndex = 18;
+            this.checkChildDependOnParent.Text = "Childs depends on parent";
+            this.checkChildDependOnParent.UseVisualStyleBackColor = true;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(426, 26);
+            this.textBox1.MaxLength = 9999999;
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBox1.Size = new System.Drawing.Size(367, 279);
+            this.textBox1.TabIndex = 19;
+            // 
             // StepsIdentifier
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(605, 443);
+            this.ClientSize = new System.Drawing.Size(815, 450);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.checkChildDependOnParent);
+            this.Controls.Add(this.checkDependsOnChild);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.comboParent);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.comboSelectorType);
             this.Controls.Add(this.btnAdd);
@@ -211,5 +268,10 @@
         private System.Windows.Forms.Button btnAdd;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox comboSelectorType;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox comboParent;
+        private System.Windows.Forms.CheckBox checkDependsOnChild;
+        private System.Windows.Forms.CheckBox checkChildDependOnParent;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }

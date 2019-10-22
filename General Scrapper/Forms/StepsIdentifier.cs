@@ -16,7 +16,8 @@ namespace General_Scrapper.Forms
     public partial class StepsIdentifier : Form
     {
         private AllOperation _operation;
-        private List<BaseOperation> operations;
+        private List<AllOperation> operations;
+        private int id = 0;
 
         public StepsIdentifier()
         {
@@ -29,8 +30,40 @@ namespace General_Scrapper.Forms
         {
             _operation.Text = txtText.Text;
             _operation.Value = txtValue.Text;
-            operations.Add(_operation);
+            _operation.Id = id+1;
+            _operation.DependsOnChild = checkDependsOnChild.Checked;
+            _operation.ChildDependsOnParent = checkChildDependOnParent.Checked;
+            
+            if (string.IsNullOrEmpty(comboParent.Text) == true)
+                operations.Add(_operation);
+            else//manage the parent child relation
+            {
+                var parent=FindOperationById(int.Parse(comboParent.Text));
+                if (parent != null)
+                    parent.Nested = _operation;
+                else
+                    MessageBox.Show("No parent found please set the parent again");
+            }
             ClearForm();
+            id++;
+            comboParent.Items.Add(id);
+            textBox1.Text = Newtonsoft.Json.JsonConvert.SerializeObject(operations);
+        }
+        AllOperation FindOperationById(int id)
+        {
+            foreach(var op in operations)
+            {
+                if (op.Id == id)
+                    return op;
+                var temp = op;
+                while(temp!=null)
+                {
+                    if (temp.Id == id)
+                        return temp;
+                    temp = temp.Nested;
+                }
+            }
+            return null;
         }
         private void ClearForm()
         {
@@ -47,7 +80,7 @@ namespace General_Scrapper.Forms
         #region private functions
         private void PopulateForm()
         {
-            operations = new List<BaseOperation>();
+            operations = new List<AllOperation>();
             _operation = new AllOperation();
             comboValueTypes.Items.AddRange(GetValues(typeof(ValueType)).ToArray());
         }
@@ -125,6 +158,8 @@ namespace General_Scrapper.Forms
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
+            if(_operation.Expressions==null)
+            _operation.Expressions = new Dictionary<string, string>();
             _operation.Expressions.Add(txtText.Text, txtValue.Text);
         }
 
